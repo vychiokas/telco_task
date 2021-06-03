@@ -51,4 +51,4 @@ class MyLogger(metaclass=SingletonMeta):
     def logger(self):
         return self._logger
 
-LOG = MyLogger("stakinator", "log.txt").logger
+LOG = MyLogger("telco", "log.txt").logger

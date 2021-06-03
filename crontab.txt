@@ -1,0 +1,1 @@
+* * * * * cd /workspaces/telco_task/ && .venv/bin/python main.py -c > /workspaces/cronlog.txt 2>&1

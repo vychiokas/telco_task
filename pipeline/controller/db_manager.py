@@ -1,17 +1,21 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from stakinator.model.data_model import Base
+from pipeline.model.data_model import Base
 
-DB_NAME = "stakinator"
-_CONNECTION_STRING = "postgres+psycopg2://{0}:{1}@{2}/%s" % DB_NAME
+_DB_NAME = "telco"
+_CONNECTION_STRING = "postgresql+psycopg2://{0}:{1}@{2}/%s" % _DB_NAME
+_DATABASE_IP = "172.18.0.1"
+_DATABASE_PORT = "5432"
+_USER_NAME = "postgres"
+_PASSWORD = "example"
 
-class DatabaseManager(object):
+class DatabaseManager:
     __instance = None
 
     def __new__(cls):
         if DatabaseManager.__instance is None:
             DatabaseManager.__instance = object.__new__(cls)
-            DatabaseManager.__instance.engine = create_engine(_CONNECTION_STRING.format("postgres", "example", "172.17.0.1:5433"), echo=False)
+            DatabaseManager.__instance.engine = create_engine(_CONNECTION_STRING.format(_USER_NAME, _PASSWORD, _DATABASE_IP+":"+_DATABASE_PORT), echo=False)
             
             # Create a configured "Session" class
             sm = sessionmaker(bind=DatabaseManager.__instance.engine, autoflush=True, autocommit=False)
@@ -30,3 +34,8 @@ class DatabaseManager(object):
     def execute(self, statement):
         with self.engine.connect() as cn:
             cn.execute(statement)
+    
+    def recreate_table(self):
+        self.dm.drop_structure()
+        self.dm.create_structure()
+         
