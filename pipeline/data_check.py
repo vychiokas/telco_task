@@ -32,7 +32,7 @@ class DataCheck():
         schema = pa.DataFrameSchema(
         columns={
             "customer_id": pa.Column(pa.Int, [pa.Check.greater_than(0)]),
-            "event_start_time": pa.Column(pa.DateTime),
+            "event_start_time": pa.Column(pa.String),
             "event_type": pa.Column(pa.String, pa.Check.isin(["VOICE", "MMS", "SMS", "DATA"])),
             "rate_plan_id": pa.Column(pa.Int, pa.Check.greater_than(-1)),
             "billing_flag_1": pa.Column(pa.Int, [pa.Check.greater_than(-1)]),
@@ -44,8 +44,9 @@ class DataCheck():
         strict=True
         )
         self._data = self.in_connector.open()
+        
+        self._data = self._data.head(50000)
         self.additional_test()
-        print(self._data.dtypes)
         try:
             schema.validate(self._data, lazy=True)
             if self._LOG:
@@ -78,13 +79,13 @@ class DataCheck():
                     self.LOG.warning("Keeping duplicates within data!")
         if self._LOG:
             self.LOG.warning("Saving data")
-        self._data.to_csv("data/pv_usage.csv")
+        self._data.to_csv("data/pv_usage.csv", index=False)
 
     def test_datetime_column(self):
         if self._LOG:
             self.LOG.info("Trying to convert 'event_start_time' to datetime object")
         try:
-            self._data["event_start_time"] = pd.to_datetime(self._data["event_start_time"], format='%Y-%m-%dT%H:%M:%S.%f%z')
+            pd.to_datetime(self._data["event_start_time"], format='%Y-%m-%dT%H:%M:%S.%f%z')
         except Exception as e:
             if self._LOG:
                 self.LOG.error("Could not convert 'event_start_time' to datetime object please check the column. Aborting...")

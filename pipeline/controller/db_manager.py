@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from pipeline.model.data_model import Base
+from pipeline.model.data_model import Meta
 
 _DB_NAME = "telco"
 _CONNECTION_STRING = "postgresql+psycopg2://{0}:{1}@{2}/%s" % _DB_NAME
@@ -26,10 +26,10 @@ class DatabaseManager:
         return getattr(self.__instance, name)
 
     def create_structure(self):
-        Base.metadata.create_all(self.engine)
+        Meta.create_all(self.engine)
 
     def drop_structure(self):
-        Base.metadata.drop_all(self.engine)
+        Meta.drop_all(self.engine)
 
     def execute(self, statement):
         with self.engine.connect() as cn:

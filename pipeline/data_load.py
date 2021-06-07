@@ -10,14 +10,13 @@ class DatabaseImporter():
 
     def run(self, dataframe:pd.DataFrame, table_name):
         inspector = inspect(self.dm.engine)
-
         if not inspector.has_table(table_name):
             self.dm.create_structure()
 
         dataframe.to_sql(
         table_name,
         self.dm.engine,
-        if_exists='replace',
+        if_exists='append',
         index=False,
         chunksize=5000,
 )   

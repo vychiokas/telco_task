@@ -7,16 +7,8 @@ class Aggregator():
         self._data = data
 
     def aggregate(self, col_name):
-        
 
-        # customers_service_type_df = self._data.groupby(by=[col_name]).size()
-        import pdb
-        pdb.set_trace()
         df = self._data[col_name].value_counts().rename_axis(col_name).reset_index(name="counts")
-        df["timestamp"] = date.today().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
-
+        df["timestamp"] = pd.to_datetime("now")
+        df = df[df[col_name] != col_name]
         return df
-        
-        # customers_rate_plan_df = self._data.groupby(by=[col_name]).size()
-        # dfcrp = customers_rate_plan_df.to_frame()
-        # dfcrp["timestamp"] = pd.to_datetime("now", format='%Y-%m-%dT%H:%M:%S.%f%z')

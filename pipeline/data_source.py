@@ -3,7 +3,7 @@ from abc import ABC
 from typing import List
 import pandas as pd
 
-
+# Any other source could implement this interface in order to do things
 class InputConnector(ABC):
     def __init__(self, **kwargs):
         pass

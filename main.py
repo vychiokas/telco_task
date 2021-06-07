@@ -38,8 +38,10 @@ if args.datavalidation:
 
 if args.populate:
     dataframe = CsvInputConnector(_DATA_FILE_PATH_VALIDATED).open()
-    dataframe["timestamp"] = date.today().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+    dataframe["timestamp"] = pd.to_datetime("now")
+    # date.today().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
     dataframe["event_start_time"] = pd.to_datetime(dataframe["event_start_time"], format='%Y-%m-%dT%H:%M:%S.%f%z')
+
     DatabaseImporter(DatabaseManager()).run(dataframe, "usage")
 
 # TODO: Does not work yet needs fixing of the data model in order to automatically create a table within database and upload
@@ -49,9 +51,9 @@ if args.aggregation:
     agg = Aggregator(input_connector.open())
     input_connector = CsvInputConnector(_DATA_FILE_PATH)
     df = agg.aggregate("event_type")
-    # DatabaseImporter(DatabaseManager()).run(df, "event_type_aggregated")
+    DatabaseImporter(DatabaseManager()).run(df, "aggreagation1")
     df = agg.aggregate("rate_plan_id")
-    # DatabaseImporter(DatabaseManager()).run(df, "rate_plan_id_aggregated")
+    DatabaseImporter(DatabaseManager()).run(df, "aggreagation2")
 
 if args.cleandb:
     Cleaner.delete_old_entries(DatabaseManager)
