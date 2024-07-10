@@ -23,4 +23,4 @@ typing-extensions==3.10.0.0
 typing-inspect==0.6.0
 utils==1.0.1
 wrapt==1.12.1
-zipp==3.4.1
+zipp==3.19.1
